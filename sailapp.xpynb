@@ -1,0 +1,67 @@
+import numpy as np # linear algebra
+import pandas as pd # data processing
+import matplotlib.pyplot as plt
+import seaborn as sns #graphics, based on matplotlib
+from scipy.stats import f_oneway 
+
+import os
+for dirname, _, filenames in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+"""Variables
+CONF: The Athletic Conference in which the school participates in
+G: Number of games played
+W: Number of games won
+ADJOE: Adjusted Offensive Efficiency (An estimate of the offensive efficiency (points scored per 100 possessions) a team would have against the average Division I defense)
+ADJDE: Adjusted Defensive Efficiency (An estimate of the defensive efficiency (points allowed per 100 possessions) a team would have against the average Division I offense)
+BARTHAG: Power Rating (Chance of beating an average Division I team)
+EFG_O: Effective Field Goal Percentage Shot
+EFG_D: Effective Field Goal Percentage Allowed
+TOR: Turnover Percentage Allowed (Turnover Rate)
+TORD: Turnover Percentage Committed (Steal Rate)
+ORB: Offensive Rebound Rate
+DRB: Offensive Rebound Rate Allowed
+FTR : Free Throw Rate (How often the given team shoots Free Throws)
+FTRD: Free Throw Rate Allowed
+2P_O: Two-Point Shooting Percentage
+2P_D: Two-Point Shooting Percentage Allowed
+3P_O: Three-Point Shooting Percentage
+3P_D: Three-Point Shooting Percentage Allowed
+ADJ_T: Adjusted Tempo (An estimate of the tempo (possessions per 40 minutes) a team would have against the team that wants to play at an average Division I tempo)
+WAB: Wins Above Bubble (The bubble refers to the cut off between making the NCAA March Madness Tournament and not making it)
+POSTSEASON: Round where the given team was eliminated or where their season ended (R68 = First Four, R64 = Round of 64, R32 = Round of 32, S16 = Sweet Sixteen, E8 = Elite Eight, F4 = Final Four, 2ND = Runner-up, Champion = Winner of the NCAA March Madness Tournament for that given year)
+SEED: Seed in the NCAA March Madness Tournament
+YEAR: Season"""
+
+data=pd.read_csv('../input/college-basketball-dataset/cbb.csv') #read data
+
+new_data= data[['TEAM', 'G','W','BARTHAG','ADJOE','FTR','YEAR']]
+data['W_over_G'] = data['W']/data['G']
+winrate_and_barthag= data[['W_over_G','BARTHAG']]
+
+
+new_data.describe()
+
+
+fig = plt.figure()
+sns.regplot(data=winrate_and_barthag, x='W_over_G', y='BARTHAG')
+plt.title('Win Rate vs. Power Rating')
+
+winrate_and_ADJOE= data[['W_over_G','ADJOE']]
+
+fig = plt.figure()
+sns.regplot(data=winrate_and_ADJOE, x='W_over_G', y='ADJOE')
+plt.title('Win Rate vs. Adjusted Offensive Efficiency')
+
+winrate_and_FTR= data[['W_over_G','FTR']]
+
+fig = plt.figure()
+sns.regplot(data=winrate_and_FTR, x='W_over_G', y='FTR')
+plt.title('Win Rate vs. Free Throw Rating')
+
+winrate_and_TOR= data[['W_over_G','TOR']]
+
+fig = plt.figure()
+sns.regplot(data=winrate_and_TOR, x='W_over_G', y='TOR')
+plt.title('Win Rate vs. Turnover Percentage Allowed')
+
